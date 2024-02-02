@@ -1,21 +1,36 @@
 package br.com.ecommerce.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
-public class Product {
+public class Product implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
+    @Column(name = "name" , nullable = false)
     private String name;
+
+    @NotNull
+    @Column(name = "value" , nullable = false)
     private BigDecimal value;
+
+    @NotNull
+    @Column(name = "description")
     private String description;
+
+    @NotNull
+    @Column(name = "date_register_cadastre")
+    private Date date_register_cadastre;
 
 
     public Integer getId() {
@@ -57,6 +72,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 ", description='" + description + '\'' +
+                ", date_register_cadastre=" + date_register_cadastre +
                 '}';
     }
 }
