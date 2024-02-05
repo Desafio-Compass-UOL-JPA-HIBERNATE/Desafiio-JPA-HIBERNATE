@@ -2,21 +2,33 @@ package br.com.ecommerce;
 
 import br.com.ecommerce.domain.Product;
 import br.com.ecommerce.dto.ProductDAO;
-import br.com.ecommerce.service.UtilConnectionHibernate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-
-        Product prod = new Product("Th", 2.0,"brasul", null);
-
         ProductDAO productDAO = new ProductDAO();
 
-        productDAO.create(prod);
+        Product prod = new Product("TV", 1500.75,"TV Samsung");
+        Product teste = new Product("Celular", 735.90,"Redmi Note 8");
+        Product a = new Product("Geladeira", 2000.0,"Brastemp");
 
+
+//        System.out.println(productDAO.create(prod).toString());
+//        System.out.println(productDAO.create(teste).toString());
+//        System.out.println(productDAO.create(a).toString());
+//
+//
+//        List<Product> products = new ProductDAO().listAll();
+//        for (Product product : products) {
+//            System.out.println(product.toString());
+//        }
+
+        productDAO.close();
     }
 }

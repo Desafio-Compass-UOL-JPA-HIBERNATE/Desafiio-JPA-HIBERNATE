@@ -6,6 +6,8 @@ import br.com.ecommerce.dto.interfaces.IProductDAO;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class ProductDAO implements IProductDAO {
 
@@ -21,15 +23,17 @@ public class ProductDAO implements IProductDAO {
         em = emf.createEntityManager();
     }
 
-
+    public void close() {
+        em.close();
+        emf.close();
+    }
     //Testing Privilege
     @Override
     public Product create(Product product) throws Exception {
         // Opening Connection to the DB
         em.getTransaction().begin();
-        em.merge(product);  // poderia ser em.persist(cliente);
+        em.persist(product);
         em.getTransaction().commit();
-        emf.close();
         return  product;
     }
 
@@ -39,12 +43,15 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public Product read() throws Exception {
-        return null;
+    public List<Product> listAll() throws Exception {
+        TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p", Product.class);
+        return query.getResultList();
+
+
     }
 
     @Override
-    public Product getProduct(Integer id) throws Exception {
+    public Product findById(Integer id) throws Exception {
         return null;
     }
 

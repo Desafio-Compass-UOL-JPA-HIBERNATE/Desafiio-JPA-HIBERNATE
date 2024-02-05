@@ -28,20 +28,16 @@ public class Product implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @NotNull
-    @Column(name = "date_register_cadastre")
-    private Date date_register_cadastre;
 
     public Product(){
 
     }
 
 
-    public Product(String name, Double value, String description, Date date_register_cadastre) {
+    public Product(String name, Double value, String description) {
         this.name = name;
         this.value = value;
         this.description = description;
-        this.date_register_cadastre = date_register_cadastre;
     }
 
     public Integer getId() {
@@ -83,7 +79,6 @@ public class Product implements Serializable {
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 ", description='" + description + '\'' +
-                ", date_register_cadastre=" + date_register_cadastre +
                 '}';
     }
 }
