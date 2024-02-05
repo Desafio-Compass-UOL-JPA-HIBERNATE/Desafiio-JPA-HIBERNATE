@@ -6,9 +6,13 @@ import java.util.List;
 
 public interface IProductDAO {
 
-    public Product create() throws Exception;
-    public Product update() throws Exception;
-    public Product read() throws Exception;
-    public Product getProduct(Integer id) throws Exception;
-    public void delete() throws Exception;
+	Product create(Product product) throws Exception;
+
+	Product update(Product product) throws Exception;
+
+	Product read(Integer id) throws Exception;
+
+	void delete(Integer id) throws Exception;
+
+	List<Product> getAllProducts() throws Exception;
 }
