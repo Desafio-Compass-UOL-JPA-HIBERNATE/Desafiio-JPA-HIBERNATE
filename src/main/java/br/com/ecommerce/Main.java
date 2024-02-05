@@ -29,6 +29,8 @@ public class Main {
 //            System.out.println(product.toString());
 //        }
 
+//        System.out.println(productDAO.findById(2).toString());
+
         productDAO.close();
     }
 }

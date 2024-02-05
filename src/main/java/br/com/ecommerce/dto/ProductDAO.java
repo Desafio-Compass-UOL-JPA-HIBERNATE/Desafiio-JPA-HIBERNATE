@@ -52,7 +52,9 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public Product findById(Integer id) throws Exception {
-        return null;
+        Product product = em.find(Product.class, id);
+        return product;
+
     }
 
     @Override
