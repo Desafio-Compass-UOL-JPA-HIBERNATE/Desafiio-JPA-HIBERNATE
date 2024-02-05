@@ -2,54 +2,116 @@ package br.com.ecommerce.dto;
 
 import br.com.ecommerce.domain.Product;
 import br.com.ecommerce.dto.interfaces.IProductDAO;
+import br.com.ecommerce.exception.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+import java.util.List;
 
 public class ProductDAO implements IProductDAO {
 
-    //  EntityManagerFactory Manages Communication with DB
-    EntityManagerFactory emf;
-    // EntityManager does the transactions
-    EntityManager em;
+	private final EntityManager entityManager;
 
+	public ProductDAO(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
-    //Adicionar validação
-    public ProductDAO() {
-        emf = Persistence.createEntityManagerFactory("persiste-ecommerce"); // Aqui diz a unidade de persistência especificada no arquivo persistance.xml
-        em = emf.createEntityManager();
-    }
+	@Override
+	@Transactional
+	public Product create(Product product) {
+		try {
+			checkIfProductExists(product.getName());
+			entityManager.persist(product);
+			return product;
+		} catch (ProductAlreadyExistsException ex) {
+			handleException(ex);
+			return null;
+		} catch (Exception ex) {
+			handleException(new ProductNotCreatedException(product.getName(), ex));
+			return null;
+		}
+	}
 
+	@Override
+	@Transactional
+	public Product update(Product product) {
+		try {
+			checkIfProductExists(product.getName());
+			entityManager.merge(product);
+			return product;
+		} catch (ProductAlreadyExistsException ex) {
+			handleException(ex);
+			return null;
+		} catch (Exception ex) {
+			handleException(new ProductNotFoundException("Error updating product", ex));
+			return null;
+		}
+	}
 
-    //Testing Privilege
-    @Override
-    public Product create(Product product) throws Exception {
-        // Opening Connection to the DB
-        em.getTransaction().begin();
-        em.merge(product);  // poderia ser em.persist(cliente);
-        em.getTransaction().commit();
-        emf.close();
-        return  product;
-    }
+	@Override
+	@Transactional
+	public Product read(Integer id) {
+		try {
+			Product product = entityManager.find(Product.class, id);
+			if (product == null) {
+				throw new ProductNotFoundException(id);
+			}
+			return product;
+		} catch (ProductNotFoundException ex) {
+			handleException(ex);
+			return null;
+		} catch (Exception ex) {
+			handleException(new ProductNotFoundException("Error reading product", ex));
+			return null;
+		}
+	}
 
-    @Override
-    public Product update() throws Exception {
-        return null;
-    }
+	@Override
+	@Transactional
+	public void delete(Integer id) {
+		try {
+			Product product = entityManager.find(Product.class, id);
+			if (product == null) {
+				throw new ProductNotFoundException(id);
+			}
+			entityManager.remove(product);
+		} catch (ProductNotFoundException ex) {
+			handleException(ex);
+		} catch (Exception ex) {
+			handleException(new ProductNotDeletedException(id));
+		}
+	}
 
-    @Override
-    public Product read() throws Exception {
-        return null;
-    }
+	private void checkIfProductExists(String productName) {
+		try {
+			TypedQuery<Long> query = entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE p.name = :name",
+					Long.class);
+			query.setParameter("name", productName);
+			Long count = query.getSingleResult();
 
-    @Override
-    public Product getProduct(Integer id) throws Exception {
-        return null;
-    }
+			if (count > 0) {
+				throw new ProductAlreadyExistsException(productName);
+			}
+		} catch (Exception ex) {
+			handleException(ex);
+		}
+	}
 
-    @Override
-    public void delete() throws Exception {
+	private void handleException(Exception ex) {
+		ex.printStackTrace();
+	}
 
-    }
+	@Override
+	@Transactional
+	public List<Product> getAllProducts() {
+		try {
+			String jpql = "SELECT p FROM Product p";
+			TypedQuery<Product> query = entityManager.createQuery(jpql, Product.class);
+			return query.getResultList();
+		} catch (Exception ex) {
+			handleException(ex);
+			return null;
+		}
+	}
 }
