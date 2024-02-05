@@ -2,15 +2,17 @@ package br.com.ecommerce.dto;
 
 import br.com.ecommerce.domain.Product;
 import br.com.ecommerce.dto.interfaces.IProductDAO;
+import br.com.ecommerce.exception.*;
 
 import javax.persistence.EntityManager;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class ProductDAO implements IProductDAO {
-
+  
     //  EntityManagerFactory Manages Communication with DB
     EntityManagerFactory emf;
     // EntityManager does the transactions
@@ -78,4 +80,5 @@ public class ProductDAO implements IProductDAO {
         em.getTransaction().commit();
 
     }
+
 }
