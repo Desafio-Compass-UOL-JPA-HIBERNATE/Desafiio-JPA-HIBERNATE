@@ -63,13 +63,19 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public Product findById(Integer id) throws Exception {
-        Product product = em.find(Product.class, id);
-        return product;
+        return em.find(Product.class, id);
 
     }
 
     @Override
-    public void delete() throws Exception {
+    public void delete(Integer id) throws Exception {
+        em.getTransaction().begin();
+        Product product = findById(id);
+        if (product == null) {
+            throw new Exception("Product not found");
+        }
+        em.remove(product);
+        em.getTransaction().commit();
 
     }
 }

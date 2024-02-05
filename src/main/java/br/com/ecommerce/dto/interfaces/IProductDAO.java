@@ -10,5 +10,5 @@ public interface IProductDAO {
     public Product update(Product p, Integer id) throws Exception;
     public List<Product> listAll() throws Exception;
     public Product findById(Integer id) throws Exception;
-    public void delete() throws Exception;
+    public void delete(Integer id) throws Exception;
 }

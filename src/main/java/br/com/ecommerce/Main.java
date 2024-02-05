@@ -28,10 +28,13 @@ public class Main {
 //        for (Product product : products) {
 //            System.out.println(product.toString());
 //        }
-        a.setValue(2500.0);
-        a.setName("Geladeira Brastemp 2 portas frost free");
-        System.out.println(productDAO.update(a, 3).toString());
+//        a.setValue(2500.0);
+//        a.setName("Geladeira Brastemp 2 portas frost free");
+//        System.out.println(productDAO.update(a, 3).toString());
 //        System.out.println(productDAO.findById(2).toString());
+
+
+        productDAO.delete(4);
 
         productDAO.close();
     }
