@@ -7,7 +7,7 @@ import java.util.List;
 public interface IProductDAO {
 
     public Product create(Product product) throws Exception;
-    public Product update() throws Exception;
+    public Product update(Product p, Integer id) throws Exception;
     public List<Product> listAll() throws Exception;
     public Product findById(Integer id) throws Exception;
     public void delete() throws Exception;

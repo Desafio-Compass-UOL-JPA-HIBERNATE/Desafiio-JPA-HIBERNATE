@@ -38,8 +38,19 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public Product update() throws Exception {
-        return null;
+    public Product update(Product p, Integer id) throws Exception {
+        em.getTransaction().begin();
+        Product product = findById(id);
+        if (product == null) {
+            throw new Exception("Product not found");
+        }
+        product.setName(p.getName());
+        product.setValue(p.getValue());
+        product.setDescription(p.getDescription());
+
+        em.merge(product);
+        em.getTransaction().commit();
+        return product;
     }
 
     @Override
