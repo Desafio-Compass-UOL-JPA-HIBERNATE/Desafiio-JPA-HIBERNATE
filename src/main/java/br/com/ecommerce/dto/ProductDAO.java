@@ -5,15 +5,32 @@ import br.com.ecommerce.dto.interfaces.IProductDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class ProductDAO implements IProductDAO {
 
-    private EntityManager entityManager;
-    private EntityManagerFactory entityManagerFactory;
+    //  EntityManagerFactory Manages Communication with DB
+    EntityManagerFactory emf;
+    // EntityManager does the transactions
+    EntityManager em;
 
+
+    //Adicionar validação
+    public ProductDAO() {
+        emf = Persistence.createEntityManagerFactory("persiste-ecommerce"); // Aqui diz a unidade de persistência especificada no arquivo persistance.xml
+        em = emf.createEntityManager();
+    }
+
+
+    //Testing Privilege
     @Override
-    public Product create() throws Exception {
-        return null;
+    public Product create(Product product) throws Exception {
+        // Opening Connection to the DB
+        em.getTransaction().begin();
+        em.merge(product);  // poderia ser em.persist(cliente);
+        em.getTransaction().commit();
+        emf.close();
+        return  product;
     }
 
     @Override

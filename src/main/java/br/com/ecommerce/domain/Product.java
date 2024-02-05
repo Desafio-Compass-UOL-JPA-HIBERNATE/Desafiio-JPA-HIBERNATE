@@ -22,7 +22,7 @@ public class Product implements Serializable {
 
     @NotNull
     @Column(name = "value" , nullable = false)
-    private BigDecimal value;
+    private Double value;
 
     @NotNull
     @Column(name = "description")
@@ -32,6 +32,17 @@ public class Product implements Serializable {
     @Column(name = "date_register_cadastre")
     private Date date_register_cadastre;
 
+    public Product(){
+
+    }
+
+
+    public Product(String name, Double value, String description, Date date_register_cadastre) {
+        this.name = name;
+        this.value = value;
+        this.description = description;
+        this.date_register_cadastre = date_register_cadastre;
+    }
 
     public Integer getId() {
         return id;
@@ -49,11 +60,11 @@ public class Product implements Serializable {
         this.name = name;
     }
 
-    public BigDecimal getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(BigDecimal value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
