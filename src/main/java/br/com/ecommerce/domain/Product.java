@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Product implements Serializable {
@@ -28,20 +29,16 @@ public class Product implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @NotNull
-    @Column(name = "date_register_cadastre")
-    private Date date_register_cadastre;
 
     public Product(){
 
     }
 
 
-    public Product(String name, Double value, String description, Date date_register_cadastre) {
+    public Product(String name, Double value, String description) {
         this.name = name;
         this.value = value;
         this.description = description;
-        this.date_register_cadastre = date_register_cadastre;
     }
 
     public Integer getId() {
@@ -77,13 +74,25 @@ public class Product implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 ", description='" + description + '\'' +
-                ", date_register_cadastre=" + date_register_cadastre +
                 '}';
     }
 }
