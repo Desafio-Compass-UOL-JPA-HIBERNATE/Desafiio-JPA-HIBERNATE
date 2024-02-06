@@ -18,11 +18,11 @@ public class Product implements Serializable {
     private Integer id;
 
     @NotNull
-    @Column(name = "name" , nullable = false)
+    @Column(name = "name" , nullable = false, unique = true)
     private String name;
 
     @NotNull
-    @Column(name = "value" , nullable = false)
+    @Column(name = "value" , nullable = false, scale = 2)
     private Double value;
 
     @NotNull
@@ -88,11 +88,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", value=" + value +
-                ", description='" + description + '\'' +
-                '}';
+        return "Product\n{" + "\n  \"id\": " + id + ",\n  \"name\": \"" + name + "\",\n  \"value\": " + value + ",\n  \"description\": \"" + description + "\"\n}\n";
+        //essa formatação é semelhante a do JSON
     }
 }
