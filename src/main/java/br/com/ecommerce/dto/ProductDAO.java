@@ -13,95 +13,106 @@ import java.util.List;
 
 public class ProductDAO implements IProductDAO {
 
-	// EntityManagerFactory Manages Communication with DB
-	EntityManagerFactory emf;
-	// EntityManager does the transactions
-	EntityManager em;
+  
+    //  EntityManagerFactory Manages Communication with DB
+    EntityManagerFactory emf;
+    // EntityManager does the transactions
+    EntityManager em;
 
-	// Adicionar validação
-	public ProductDAO() {
-		emf = Persistence.createEntityManagerFactory("persiste-ecommerce"); // Aqui diz a unidade de persistência
-																			// especificada no arquivo persistance.xml
-		em = emf.createEntityManager();
-	}
 
-	public void close() {
-		em.close();
-		emf.close();
-	}
+    //Adicionar validação
+    public ProductDAO() {
+        try {
+            emf = Persistence.createEntityManagerFactory("persiste-ecommerce"); // Aqui diz a unidade de persistência especificada no arquivo persistance.xml
+            em = emf.createEntityManager();
+        }catch (Exception e) {
+            System.out.println("Error creating database connection");
+        }
+    }
 
-	// Testing Privilege
-	@Override
-	public Product create(Product product) throws ProductAlreadyExistsException, ProductNotCreatedException {
-		try {
-			em.getTransaction().begin();
-			checkIfProductExists(product.getName());
-			em.persist(product);
-			em.getTransaction().commit();
-			return product;
-		} catch (ProductAlreadyExistsException ex) {
-			em.getTransaction().rollback();
-			throw ex;
-		} catch (Exception ex) {
-			em.getTransaction().rollback();
-			throw new ProductNotCreatedException(product.getName(), ex);
-		}
-	}
+    public void close() { //Closes database connection
+        em.close();
+        emf.close();
+    }
 
-	@Override
-	public Product update(Product p, Integer id) throws Exception {
-		em.getTransaction().begin();
-		Product product = findById(id);
-		try {
-			if (product == null) {
-				throw new ProductNotFoundException(id);
-			}
-			product.setName(p.getName());
-			product.setValue(p.getValue());
-			product.setDescription(p.getDescription());
-			em.merge(product);
-			em.getTransaction().commit();
-			return product;
-		} catch (ProductNotFoundException ex) {
-			em.getTransaction().rollback();
-			throw ex;
-		} catch (Exception ex) {
-			em.getTransaction().rollback();
-			throw new ProductNotFoundException("Error updating product", ex);
-		}
-	}
+    //Testing Privilege
+    @Override
+    public Product create(Product product) throws Exception {
+        try {
+            // Opening Connection to the DB
+            em.getTransaction().begin();
+            em.persist(product);
+            em.getTransaction().commit();
+            return product;
+        }catch (Exception e){   //TODO: Tratar exceção
+            throw new Exception("Error creating product");
+        }
+    }
 
-	@Override
-	public List<Product> listAll() throws Exception {
-		TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p", Product.class);
-		return query.getResultList();
+    @Override
+    public Product update(Product p, Integer id) throws Exception {
+        try {
+            em.getTransaction().begin();
+            Product product = findById(id);
+            if (product == null) {
+                throw new Exception("Product not found");
+            }
+            product.setName(p.getName());
+            product.setValue(p.getValue());
+            product.setDescription(p.getDescription());
 
-	}
+            em.merge(product);
+            em.getTransaction().commit();
+            return product;
+        }catch (Exception e){   //TODO: Tratar exceção
+            throw new Exception("Error updating product");
+        }
+    }
 
-	@Override
-	public Product findById(Integer id) throws Exception {
-		return em.find(Product.class, id);
+    @Override
+    public List<Product> listAll() throws Exception {
+        try{
+        TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p", Product.class);
+        return query.getResultList();
+        }catch (Exception e){   //TODO: Tratar exceção
+            throw new Exception("Error listing products");
+        }
 
-	}
+    }
 
-	@Override
-	public void delete(Integer id) throws Exception {
-		em.getTransaction().begin();
-		Product product = findById(id);
-		try {
-			if (product == null) {
-				throw new ProductNotFoundException(id);
-			}
-			em.remove(product);
-			em.getTransaction().commit();
-		} catch (ProductNotFoundException ex) {
-			em.getTransaction().rollback();
-			throw ex;
-		} catch (Exception ex) {
-			em.getTransaction().rollback();
-			throw new ProductNotDeletedException(id);
-		}
-	}
+    @Override
+    public Product findById(Integer id) throws Exception {
+        try {
+            return em.find(Product.class, id);
+        }catch (Exception e){ //TODO: Tratar exceção
+            throw new Exception("Error finding product");
+        }
+    }
+
+    public Product findByName(String name) throws Exception {
+        try {
+            TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p WHERE p.name = :name", Product.class);
+            query.setParameter("name", name);
+            return query.getSingleResult();
+        }catch (Exception e){ //TODO: Tratar exceção
+            throw new Exception("Error finding product");
+        }
+    }
+
+    @Override
+    public void delete(Integer id) throws Exception {
+        try {
+            em.getTransaction().begin();
+            Product product = findById(id);
+            if (product == null) {
+                throw new Exception("Product not found");
+            }
+            em.remove(product);
+            em.getTransaction().commit();
+        }catch (Exception e){ //TODO: Tratar exceção
+            throw new Exception("Error deleting product");
+        }
+    }
 
 	private void checkIfProductExists(String productName) throws ProductAlreadyExistsException {
 		TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Product p WHERE p.name = :name", Long.class);
