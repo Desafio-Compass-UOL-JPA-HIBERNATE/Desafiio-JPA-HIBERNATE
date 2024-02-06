@@ -8,6 +8,9 @@ public class ProductAlreadyExistsException extends EcommerceException {
 	public ProductAlreadyExistsException(String productName) {
 		super("Product with name '" + productName + "' already exists");
 	}
+	public ProductAlreadyExistsException(Integer id) {
+		super("Product with ID '" + id + "' already exists");
+	}
 
 	//segundo construtor aceita menssagem e causa
 	public ProductAlreadyExistsException(String message, Throwable cause) {

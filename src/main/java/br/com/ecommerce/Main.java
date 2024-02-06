@@ -78,9 +78,11 @@ public class Main {
                         //Update Product
                         System.out.println("Enter the ID of the product: ");
                         id = Integer.parseInt(scanner.nextLine());
+                        productDAO.checkIfProductExistsId(id);
 
                         System.out.println("Enter the new name of the product: ");
                         String newName = scanner.nextLine().toUpperCase();
+                        productDAO.checkIfProductExists(newName);
 
                         System.out.println("Enter the new value of the product: ");
                         Double newValue = Double.parseDouble(scanner.nextLine());
@@ -96,6 +98,7 @@ public class Main {
                         //Remove Product
                         System.out.println("Enter the ID of the product: ");
                         id = Integer.parseInt(scanner.nextLine());
+                        productDAO.checkIfProductExistsId(id);
                         productDAO.delete(id);
                         System.out.println("Product removed");
                         break;

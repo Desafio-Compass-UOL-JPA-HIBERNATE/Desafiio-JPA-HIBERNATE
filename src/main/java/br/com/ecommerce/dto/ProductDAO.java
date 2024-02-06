@@ -174,4 +174,14 @@ public class ProductDAO implements IProductDAO {
 			throw new ProductAlreadyExistsException(productName);
 		}
 	}
+
+    public void checkIfProductExistsId(Integer id) throws ProductAlreadyExistsException {
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Product p WHERE p.id = :id", Long.class);
+        query.setParameter("id", id);
+        Long count = query.getSingleResult();
+        if (!(count > 0)) {
+            throw new ProductNoExistIdException(id);
+        }
+    }
+
 }
