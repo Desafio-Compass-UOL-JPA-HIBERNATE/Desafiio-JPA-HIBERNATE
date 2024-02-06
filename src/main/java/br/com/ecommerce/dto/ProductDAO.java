@@ -166,11 +166,10 @@ public class ProductDAO implements IProductDAO {
      * @param productName
      * @throws ProductAlreadyExistsException
      */
-	private void checkIfProductExists(String productName) throws ProductAlreadyExistsException {
+	public void checkIfProductExists(String productName) throws ProductAlreadyExistsException {
 		TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Product p WHERE p.name = :name", Long.class);
 		query.setParameter("name", productName);//compara no banco de dados se o produto com mesmo nome já existe
 		Long count = query.getSingleResult();
-
 		if (count > 0) {
 			throw new ProductAlreadyExistsException(productName);
 		}

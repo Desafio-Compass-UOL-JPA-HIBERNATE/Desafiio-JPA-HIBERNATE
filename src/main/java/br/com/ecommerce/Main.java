@@ -54,7 +54,8 @@ public class Main {
                     case 3:
                         //Register New Product
                         System.out.println("Enter the name of the product: ");
-                        name = scanner.nextLine();
+                        name = scanner.nextLine().toUpperCase();
+                        productDAO.checkIfProductExists(name);
 
                         System.out.println("Enter the value of the product: ");
                         value = Double.parseDouble(scanner.nextLine());
@@ -79,13 +80,13 @@ public class Main {
                         id = Integer.parseInt(scanner.nextLine());
 
                         System.out.println("Enter the new name of the product: ");
-                        String newName = scanner.nextLine();
+                        String newName = scanner.nextLine().toUpperCase();
 
                         System.out.println("Enter the new value of the product: ");
                         Double newValue = Double.parseDouble(scanner.nextLine());
 
                         System.out.println("Enter the new description of the product: ");
-                        String newDescription = scanner.nextLine();
+                        String newDescription = scanner.nextLine().toUpperCase();
 
                         Product updatedProduct = new Product(newName, newValue, newDescription);
                         productDAO.update(updatedProduct, id);
