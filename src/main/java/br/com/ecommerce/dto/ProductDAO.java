@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class ProductDAO implements IProductDAO {
+
   
     //  EntityManagerFactory Manages Communication with DB
     EntityManagerFactory emf;
@@ -113,4 +114,13 @@ public class ProductDAO implements IProductDAO {
         }
     }
 
+	private void checkIfProductExists(String productName) throws ProductAlreadyExistsException {
+		TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Product p WHERE p.name = :name", Long.class);
+		query.setParameter("name", productName);//compara no banco de dados se o produto com mesmo nome já existe
+		Long count = query.getSingleResult();
+
+		if (count > 0) {
+			throw new ProductAlreadyExistsException(productName);
+		}
+	}
 }
