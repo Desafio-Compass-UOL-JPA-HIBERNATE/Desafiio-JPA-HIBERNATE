@@ -13,6 +13,7 @@ public class ProductNotDeletedException extends EcommerceException {
      */
 	public ProductNotDeletedException(Integer productId) {
 		super("Error deleting product with ID '" + productId + "'.");
+		System.out.println(new StatusMessage(Status.INTERNAL_SERVER_ERROR, "Error deleting product with ID '" + productId + "'."));
 	}
 
 	/**
@@ -22,5 +23,6 @@ public class ProductNotDeletedException extends EcommerceException {
      */
 	public ProductNotDeletedException(String message, Throwable cause) {
 		super(message, cause);
+		System.out.println(new StatusMessage(Status.INTERNAL_SERVER_ERROR, message));
 	}
 }

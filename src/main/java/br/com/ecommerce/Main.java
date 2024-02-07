@@ -2,6 +2,8 @@ package br.com.ecommerce;
 
 import br.com.ecommerce.domain.Product;
 import br.com.ecommerce.dto.ProductDAO;
+import br.com.ecommerce.exception.Status;
+import br.com.ecommerce.exception.StatusMessage;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,8 +22,8 @@ public class Main {
         ProductDAO productDAO = new ProductDAO(); //Begins the connection with the database
         Scanner scanner = new Scanner(System.in);
         int choice;
-        int id;
 
+        int id;
         String name;
         double value;
         String description;
@@ -42,6 +44,8 @@ public class Main {
                     case 1:
                         //List All Products
                         List<Product> products = productDAO.listAll();
+                        //Reads the list of products and prints them
+                        System.out.println(new StatusMessage(Status.OK, "GET Successful").toString());
                         for (Product p : products) {
                             System.out.println(p.toString());
                         }
@@ -52,16 +56,32 @@ public class Main {
                         id = Integer.parseInt(scanner.nextLine());
 
                         Product product = productDAO.findById(id);
-                        System.out.println(product.toString());
+                        if(product != null){
+                            System.out.println(new StatusMessage(Status.OK, "GET Successful").toString());
+                            System.out.println(product.toString());
+                        }else{
+                            System.out.println(new StatusMessage(Status.NOT_FOUND, "Product not found").toString());
+                        }
+
                         break;
                     case 3:
                         //Register New Product
-                        System.out.println("Enter the name of the product: ");
-                        name = scanner.nextLine().toUpperCase();
-                        productDAO.checkIfProductExists(name);
+                        do {
+                            System.out.println("Enter the name of the product: ");
+                            name = scanner.nextLine().toUpperCase();
+                            productDAO.checkIfProductExists(name);
+                            if (name.isEmpty()) {
+                                System.out.println("The name cannot be empty");
+                            }
+                        } while (name.isEmpty());
 
-                        System.out.println("Enter the value of the product: ");
-                        value = Double.parseDouble(scanner.nextLine());
+                        do {
+                            System.out.println("Enter the value of the product: ");
+                            value = Double.parseDouble(scanner.nextLine());
+                            if (value <= 0) {
+                                System.out.println("The value must be greater than 0");
+                            }
+                        } while (value <= 0);
 
                         do {
                             System.out.println("Enter the description of the product: ");
@@ -69,33 +89,39 @@ public class Main {
 
                             if (description.length() < 10) { //se achar melhor pode tratar isso como exceção
                                 System.out.println("The description must have at least 10 characters");
-                                System.out.println(description.length());
                             }
                         } while (description.length() < 10);
+
                         Product newProduct = new Product(name, value, description);
                         productDAO.create(newProduct);
+                        System.out.println(new StatusMessage(Status.CREATED, "Product created").toString());
                         System.out.println(productDAO.findByName(newProduct.getName()).toString());
-                        //seguindo o requisito do trabalho, mostrar o produto criado ao final
+                        //as asked in the exercise, the product is shown after being registered
                         break;
                     case 4:
                         //Update Product
                         System.out.println("Enter the ID of the product: ");
                         id = Integer.parseInt(scanner.nextLine());
-                        productDAO.checkIfProductExistsId(id);
 
-                        System.out.println("Enter the new name of the product: ");
-                        String newName = scanner.nextLine().toUpperCase();
-                        productDAO.checkIfProductExists(newName);
+                        if (productDAO.findById(id) == null) {
+                            System.out.println(new StatusMessage(Status.NOT_FOUND, "Product not found").toString());
+                            break;
+                        }else{
+                            System.out.println("Enter the new name of the product: ");
+                            String newName = scanner.nextLine().toUpperCase();
 
-                        System.out.println("Enter the new value of the product: ");
-                        Double newValue = Double.parseDouble(scanner.nextLine());
+                            System.out.println("Enter the new value of the product: ");
+                            Double newValue = Double.parseDouble(scanner.nextLine());
 
-                        System.out.println("Enter the new description of the product: ");
-                        String newDescription = scanner.nextLine().toUpperCase();
+                            System.out.println("Enter the new description of the product: ");
+                            String newDescription = scanner.nextLine().toUpperCase();
 
-                        Product updatedProduct = new Product(newName, newValue, newDescription);
-                        productDAO.update(updatedProduct, id);
-                        System.out.println(productDAO.findById(id).toString());
+                            Product updatedProduct = new Product(newName, newValue, newDescription);
+                            productDAO.update(updatedProduct, id);
+                            System.out.println(new StatusMessage(Status.OK, "Product updated").toString());
+                            System.out.println(productDAO.findById(id).toString());
+                        }
+
                         break;
                     case 5:
                         //Remove Product
@@ -103,7 +129,7 @@ public class Main {
                         id = Integer.parseInt(scanner.nextLine());
                         productDAO.checkIfProductExistsId(id);
                         productDAO.delete(id);
-                        System.out.println("Product removed");
+                        System.out.println(new StatusMessage(Status.NO_CONTENT, "Product deleted").toString());
                         break;
                     default:
                         System.out.println("Invalid Option");

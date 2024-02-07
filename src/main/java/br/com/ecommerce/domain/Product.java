@@ -1,6 +1,7 @@
 package br.com.ecommerce.domain;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,6 +31,7 @@ public class Product implements Serializable {
     private Double value;
 
     @NotNull
+    @Size(min = 10)
     @Column(name = "description")
     private String description;
 

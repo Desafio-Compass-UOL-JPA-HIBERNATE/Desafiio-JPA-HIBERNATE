@@ -13,6 +13,7 @@ public class ProductNoExistIdException extends EcommerceException {
      */
 	public ProductNoExistIdException(Integer id) {
 		super("There is no product with this ID " + id);
+		System.out.println(new StatusMessage(Status.NOT_FOUND, "Product with ID " + id + " not found").toString());
 	}
 
 	 /**
@@ -22,5 +23,6 @@ public class ProductNoExistIdException extends EcommerceException {
      */
 	public ProductNoExistIdException(String message, Throwable cause) {
 		super(message, cause);
+		System.out.println(new StatusMessage(Status.NOT_FOUND, message).toString());
 	}
 }

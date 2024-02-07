@@ -186,6 +186,7 @@ public class ProductDAO implements IProductDAO {
 		query.setParameter("name", productName);// compara no banco de dados se o produto com mesmo nome já existe
 		Long count = query.getSingleResult();
 		if (count > 0) {
+			System.out.println(new StatusMessage(Status.BAD_REQUEST, "Product with this name already exists").toString());
 			throw new ProductAlreadyExistsException(productName);
 		}
 	}

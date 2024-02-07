@@ -13,6 +13,7 @@ public class ProductNotCreatedException extends EcommerceException {
      */
 	public ProductNotCreatedException(String productName) {
 		super("Error creating product with name '" + productName);
+		System.out.println(new StatusMessage(Status.INTERNAL_SERVER_ERROR, "Error creating product with name " + productName).toString());
 	}
 
 	/**
@@ -22,5 +23,6 @@ public class ProductNotCreatedException extends EcommerceException {
      */
 	public ProductNotCreatedException(String message, Throwable cause) {
 		super(message, cause);
+		System.out.println(new StatusMessage(Status.INTERNAL_SERVER_ERROR, message).toString());
 	}
 }
