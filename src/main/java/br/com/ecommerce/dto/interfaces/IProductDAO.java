@@ -4,6 +4,9 @@ import br.com.ecommerce.domain.Product;
 
 import java.util.List;
 
+/**
+ * Interface that contains the methods that will be implemented in ProductDAO
+ */
 public interface IProductDAO {
     public Product create(Product product) throws Exception;
     public Product update(Product p, Integer id) throws Exception;

@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
- * Classe DAO
+ * The ProductDAO class is located in the
  */
 
 public class ProductDAO implements IProductDAO {
@@ -22,8 +22,6 @@ public class ProductDAO implements IProductDAO {
 	EntityManagerFactory emf;
 	// EntityManager does the transactions
 	EntityManager em;
-
-	// Adicionar validação
 
 	/**
 	 * Constructor
@@ -138,8 +136,7 @@ public class ProductDAO implements IProductDAO {
 	/**
 	 *
 	 * @param name Product name
-	 * @return It will return the product found with the name entered in the
-	 *         parameter
+	 * @return It will return the product found with the name entered in the parameter
 	 * @throws Exception
 	 */
 	public Product findByName(String name) throws ProductNotFoundException {
@@ -180,7 +177,7 @@ public class ProductDAO implements IProductDAO {
 	}
 
 	/**
-	 *
+	 * Checks if a product with the given  exists in the database.
 	 * @param productName
 	 * @throws ProductAlreadyExistsException
 	 */

@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Main class that is located in the main class that runs the program, and the same class that displays the main menu
+ */
 public class Main {
     public static void main(String[] args) throws Exception {
         ProductDAO productDAO = new ProductDAO(); //Begins the connection with the database
