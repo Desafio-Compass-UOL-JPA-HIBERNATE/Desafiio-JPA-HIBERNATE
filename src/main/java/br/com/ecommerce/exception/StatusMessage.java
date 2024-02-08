@@ -28,6 +28,7 @@ public class StatusMessage {
     }
 
     public String toString() {
+
         //return as a json string with code status and message
         return "{\"code\": " + status.getCode() + ", \"status\": \"" + status.getStatus() + "\", \"message\": \"" + message + "\"}\n\n";
 
