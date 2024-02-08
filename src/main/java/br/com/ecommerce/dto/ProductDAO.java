@@ -28,9 +28,7 @@ public class ProductDAO implements IProductDAO {
 	 */
 	public ProductDAO() {
 		try {
-			emf = Persistence.createEntityManagerFactory("persiste-ecommerce"); // Aqui diz a unidade de persistência
-																				// especificada no arquivo
-																				// persistance.xml
+			emf = Persistence.createEntityManagerFactory("persiste-ecommerce");
 			em = emf.createEntityManager();
 		} catch (Exception e) {
 			System.out.println("Error creating database connection");
@@ -41,8 +39,8 @@ public class ProductDAO implements IProductDAO {
 	 * Method that terminates the EntityManager connection
 	 */
 	public void close() { // Closes database connection
-		em.close();
-		emf.close();
+			em.close();
+			emf.close();
 	}
 
 	/**

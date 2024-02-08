@@ -40,6 +40,7 @@ public class Main {
                 switch (choice){
                     case 0:
                         //Exit
+                        System.exit(0);
                         break;
                     case 1:
                         //List All Products
