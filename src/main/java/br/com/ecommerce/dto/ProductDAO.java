@@ -28,6 +28,7 @@ public class ProductDAO implements IProductDAO {
 	 */
 	public ProductDAO() {
 		try {
+			// Opens the connection with the database
 			emf = Persistence.createEntityManagerFactory("persiste-ecommerce");
 			em = emf.createEntityManager();
 		} catch (Exception e) {
@@ -54,11 +55,11 @@ public class ProductDAO implements IProductDAO {
 	public Product create(Product product) throws ProductAlreadyExistsException, ProductNotCreatedException {
 		try {
 			em.getTransaction().begin();
-			checkIfProductExists(product.getName());
-			em.persist(product);
-			em.getTransaction().commit();
+			checkIfProductExists(product.getName()); // Checks if the product already exists
+			em.persist(product); // Persists the product in the database
+			em.getTransaction().commit(); // Commits the transaction
 			return product;
-		} catch (ProductAlreadyExistsException ex) {
+		} catch (ProductAlreadyExistsException ex) { // If the product already exists, it will throw an exception
 			em.getTransaction().rollback();
 			throw ex;
 		} catch (Exception ex) {
@@ -78,21 +79,23 @@ public class ProductDAO implements IProductDAO {
 	@Override
 	public Product update(Product p, Integer id) throws Exception {
 		em.getTransaction().begin();
-		Product product = findById(id);
+		Product product = findById(id); // Searches for the product by ID
 		try {
-			if (product == null) {
+			if (product == null) { // If the product does not exist, it will throw an exception
 				throw new ProductNotFoundException(id);
 			}
+			// If the product exists, it will update the product
 			product.setName(p.getName());
 			product.setValue(p.getValue());
 			product.setDescription(p.getDescription());
+
 			em.merge(product);
 			em.getTransaction().commit();
 			return product;
-		} catch (ProductNotFoundException ex) {
+		} catch (ProductNotFoundException ex) { // If the product does not exist, it will throw an exception
 			em.getTransaction().rollback();
 			throw ex;
-		} catch (Exception ex) {
+		} catch (Exception ex) { // If an error occurs, it will throw an exception
 			em.getTransaction().rollback();
 			throw new ProductNotFoundException("Error updating product", ex);
 		}
@@ -107,9 +110,10 @@ public class ProductDAO implements IProductDAO {
 	@Override
 	public List<Product> listAll() throws Exception {
 		try {
+			// Query that lists all products (SELECT * FROM Product)
 			TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p", Product.class);
-			return query.getResultList();
-		} catch (Exception ex) {
+			return query.getResultList(); // Returns the list of products
+		} catch (Exception ex) { // If an error occurs, it will throw an exception
 			throw new ProductNotFoundException("Error listing products", ex);
 		}
 	}
@@ -118,7 +122,7 @@ public class ProductDAO implements IProductDAO {
 	 * Method that searches by ID
 	 * 
 	 * @param id Product ID
-	 * @return It will return the product found with the ID entered in the parameter
+	 * @return It will return the product found with the ID passed in the parameter
 	 * @throws Exception
 	 */
 
@@ -134,17 +138,17 @@ public class ProductDAO implements IProductDAO {
 	/**
 	 *
 	 * @param name Product name
-	 * @return It will return the product found with the name entered in the parameter
-	 * @throws Exception
+	 * @return It will return the product found with the name passed in the parameter
+	 * @throws ProductNotFoundException
 	 */
 	public Product findByName(String name) throws ProductNotFoundException {
-		try {
+		try { // Query that searches for the product by name
 			TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p WHERE p.name = :name", Product.class);
-			query.setParameter("name", name);
-			return query.getSingleResult();
-		} catch (NoResultException e) {
+			query.setParameter("name", name); // Sets the parameter name
+			return query.getSingleResult(); // Returns the product found
+		} catch (NoResultException e) { // If the product is not found, it will throw an exception
 			throw new ProductNotFoundException("Product with name '" + name + "' not found", e);
-		} catch (Exception e) {
+		} catch (Exception e) { // If an error occurs, it will throw an exception
 			throw new ProductNotFoundException("Error finding product by name", e);
 		}
 	}
@@ -159,31 +163,31 @@ public class ProductDAO implements IProductDAO {
 	public void delete(Integer id) throws Exception {
 		try {
 			em.getTransaction().begin();
-			Product product = findById(id);
-			if (product == null) {
+			Product product = findById(id); // Searches for the product by ID
+			if (product == null) { // If the product does not exist, it will throw an exception
 				throw new ProductNotFoundException(id);
 			}
-			em.remove(product);
-			em.getTransaction().commit();
-		} catch (ProductNotFoundException ex) {
+			em.remove(product); // Removes the product from the database
+			em.getTransaction().commit(); // Commits the transaction
+		} catch (ProductNotFoundException ex) {// If the product does not exist, it will throw an exception
 			em.getTransaction().rollback();
 			throw ex;
-		} catch (Exception ex) {
+		} catch (Exception ex) {// If an error occurs, it will throw an exception
 			em.getTransaction().rollback();
 			throw new ProductNotDeletedException(id);
 		}
 	}
 
 	/**
-	 * Checks if a product with the given  exists in the database.
+	 * Checks if a product with the given name exists in the database.
 	 * @param productName
 	 * @throws ProductAlreadyExistsException
 	 */
 	public void checkIfProductExists(String productName) throws ProductAlreadyExistsException {
 		TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Product p WHERE p.name = :name", Long.class);
-		query.setParameter("name", productName);// compara no banco de dados se o produto com mesmo nome já existe
-		Long count = query.getSingleResult();
-		if (count > 0) {
+		query.setParameter("name", productName); // checks if the product already exists
+		Long count = query.getSingleResult(); // Returns the number of products with the same name
+		if (count > 0) { // If the product already exists, it will throw an exception
 			System.out.println(new StatusMessage(Status.BAD_REQUEST, "Product with this name already exists").toString());
 			throw new ProductAlreadyExistsException(productName);
 		}
@@ -196,9 +200,9 @@ public class ProductDAO implements IProductDAO {
 	 */
 	public void checkIfProductExistsId(Integer id) throws ProductAlreadyExistsException {
 		TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Product p WHERE p.id = :id", Long.class);
-		query.setParameter("id", id);
-		Long count = query.getSingleResult();
-		if (!(count > 0)) {
+		query.setParameter("id", id); // checks if the product already exists
+		Long count = query.getSingleResult(); // Returns the number of products with the same name
+		if (!(count > 0)) { // If the product does not exist, it will throw an exception
 			throw new ProductNoExistIdException(id);
 		}
 	}
