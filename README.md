@@ -11,3 +11,7 @@ CREATE TABLE product (
 
 DOCUMENTAÇÃO: 
 Se encontra dentro do projeto, na pasta docs pois foi realizada com o javadoc.
+
+
+UML DO ECOMMERCE:
+![image](https://github.com/Desafio-Compass-UOL-JPA-HIBERNATE/Desafio-JPA-HIBERNATE/assets/70045601/81b798fd-9242-48ee-8cd8-18e5b6110578)
